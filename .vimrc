@@ -1,6 +1,3 @@
-" Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
@@ -13,7 +10,6 @@ Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
 " Multiple Plug commands can be written in a single line using | separators
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
 " On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -22,10 +18,10 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
 " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
-Plug 'fatih/vim-go', { 'tag': '*' }
+" Plug 'fatih/vim-go', { 'tag': '*' }
 
 " Plugin options
-Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+" Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -33,13 +29,26 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Unmanaged plugin (manually installed and updated)
 Plug '~/my-prototype-plugin'
 
-Plug 'Valloric/YouCompleteMe'
 Plug 'flazz/vim-colorschemes'
-Plug 'vim-airline/vim-airline'
+
 Plug 'luochen1990/rainbow'
-"Plug 'kien/ctrlp.vim'
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+
+Plug 'Valloric/YouCompleteMe', {'dir':'~/.vim/bundle/YouCompleteMe'}
 Plug 'Chiel92/vim-autoformat'
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'jiangmiao/auto-pairs'
+Plug 'vim-airline/vim-airline'
+Plug 'bling/vim-bufferline'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/neosnippet.vim'
+
+
+Plug 'aklt/plantuml-syntax'
+Plug 'weirongxu/plantuml-previewer.vim'
+Plug 'tyru/open-browser.vim'
+Plug 'tenfyzhong/CompleteParameter.vim'
+Plug 'vim-scripts/fcitx.vim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 
 
@@ -47,19 +56,89 @@ Plug 'Chiel92/vim-autoformat'
 call plug#end()
 
 map <C-e> :NERDTreeToggle<CR>
-set nu
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+
+let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf=0
+
+
+" autocmd FileType c ClangFormatAutoEnable
+
+
+
+
 set ts=2
 set expandtab
 set shiftwidth=2
 set autoindent
+set number
+set relativenumber
+set nospell
+set ic
+set smartcase
+
+syntax enable
+syntax on
+colorscheme candy
+let g:rainbow_active = 1
+set autoindent
 set encoding=utf-8
 
-colorscheme candy
+set cursorline
+hi CursorLine   cterm=NONE ctermbg=black ctermfg=white
+hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white
 
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:Lf_ShortcutF='<C-P>'
 
-let g:Lf_ShortcutF = '<C-P>'
 noremap <F3> :Autoformat<CR>
+set completeopt-=preview
 
+imap <C-K>     <Plug>(neosnippet_expand_or_jump)
+smap <C-K>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-K>     <Plug>(neosnippet_expand_target)
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_ShowDevIcons = 0
+let g:Lf_PreviewInPopup = 0
+
+
+let g:Lf_GtagsAutoGenerate = 1
+noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+
+let g:Lf_autoGenerate = 1
+let g:Lf_HideHelp = 1
+noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+
+" noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
+" noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+" search visually selected text literally
+" xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+" noremap go :<C-U>Leaderf! rg --recall<CR>
+
+noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
+set hlsearch
+
+" plantuml 预览
+let g:plantuml_previer#plantuml_jar_path='~/.vim/tools'
+
+let g:mkdp_preview_options = {
+      \ 'mkit': {},
+      \ 'katex': {},
+      \ 'uml': {"server":"http://localhost:8080"},
+      \ 'maid': {},
+      \ 'disable_sync_scroll': 0,
+      \ 'sync_scroll_type': 'middle',
+      \ 'hide_yaml_meta': 1,
+      \ 'sequence_diagrams': {},
+      \ 'flowchart_diagrams': {},
+      \ 'content_editable': v:false
+      \ }
